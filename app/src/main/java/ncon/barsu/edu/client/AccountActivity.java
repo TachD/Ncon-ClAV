@@ -59,23 +59,26 @@ public class AccountActivity extends AppCompatActivity
 
         tvNick = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNick);
         tvLFName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvLFName);
-        /*
-        TextView tvAccLName = (TextView) findViewById(R.id.tvAccLName);
-        TextView tvAccFName = (TextView) findViewById(R.id.tvAccFName);
-        TextView tvAccEmail = (TextView) findViewById(R.id.tvAccEmail);
-        TextView tvAccBirth = (TextView) findViewById(R.id.tvAccBirthday);
-        */
+        // Account view data
+        View AccLayoutTest = findViewById(R.id.AccLayout);
+
+        tvAccEmail = (TextView) AccLayoutTest.findViewById(R.id.tvAccEmail);
+        TextView tvAccLName = (TextView) AccLayoutTest.findViewById(R.id.tvAccLName);
+        TextView tvAccFName = (TextView) AccLayoutTest.findViewById(R.id.tvAccFName);
+        TextView tvAccEmail = (TextView) AccLayoutTest.findViewById(R.id.tvAccEmail);
+        TextView tvAccBirth = (TextView) AccLayoutTest.findViewById(R.id.tvAccBirthday);
+
         Bundle AuthBundle = getIntent().getExtras();
 
         // getting bundle data... / auth data object
         tvNick.setText(AuthBundle.getString("Nickname"));
         tvLFName.setText(AuthBundle.getString("FName") + " " +AuthBundle.getString("LName"));
-        /*
+
         tvAccFName.setText(AuthBundle.getString("FName"));
         tvAccLName.setText(AuthBundle.getString("LName"));
         tvAccEmail.setText(AuthBundle.getString("Email"));
-        tvAccBirthday.setText(AuthBundle.getString("DayOfBirthday"));
-        */
+        tvAccBirth.setText(AuthBundle.getString("DayOfBirthday"));
+
         //
     }
 

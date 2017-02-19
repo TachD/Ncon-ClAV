@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                             startActivity(AuthIntent);
 
                         } catch (Exception Ex) {
-                            Toast.makeText(MainActivity.this, Ex.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).start();
@@ -127,14 +127,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
             LoginData = IS.readObject().toString();
         } catch (Exception Ex) {
-            Toast.makeText(this, Ex.getMessage(), Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT);
             return null;
         }
 
         Bundle AuthBundle = null;
 
-            if (LoginData.equals("0"))
-                Toast.makeText(this, "Uncorrected Password and/or Login!", Toast.LENGTH_SHORT);
+            if ("0".equals(LoginData))
+                Toast.makeText(getApplicationContext(), "Uncorrected Password and/or Login!", Toast.LENGTH_SHORT);
             else {
                 AuthBundle = new Bundle();
 
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     AuthBundle.putString("DayOfBirthday", IS.readObject().toString());
                     AuthBundle.putString("LName", IS.readObject().toString());
                 } catch (Exception Ex) {
-                    Toast.makeText(this, Ex.getMessage(), Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT);
                     return  null;
                 }
             }
