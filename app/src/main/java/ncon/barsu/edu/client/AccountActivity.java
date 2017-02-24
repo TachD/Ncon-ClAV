@@ -1,5 +1,6 @@
 package ncon.barsu.edu.client;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -89,7 +90,7 @@ public class AccountActivity extends AppCompatActivity
             @Override
             public void run() {
                 try {
-                    SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.43.47"), 10001);
+                    SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
 
                     Socket CSock = new Socket();
 
@@ -134,6 +135,21 @@ public class AccountActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            SharedPreferences AccountDataPref = getSharedPreferences("AccData", MODE_PRIVATE);
+
+            String Log = AccountDataPref.getString("Login", "");
+
+            String Pass = AccountDataPref.getString("Password", "");
+
+            SharedPreferences.Editor editor = AccountDataPref.edit();
+
+            editor.clear();
+            editor.commit();
+
+            Log = AccountDataPref.getString("Login", "");
+
+            Pass = AccountDataPref.getString("Password", "");
+
             this.finish();
             return true;
         }

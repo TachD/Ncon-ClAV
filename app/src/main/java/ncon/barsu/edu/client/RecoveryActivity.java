@@ -1,5 +1,6 @@
 package ncon.barsu.edu.client;
 
+import android.content.Intent;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                         int Code;
 
                         try {
-                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.43.47"), 10001);
+                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
 
                             Socket CSock = new Socket();
 
@@ -76,8 +77,7 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                         try {
                             Looper.prepare();
                             if (Code == 0) {
-                                Toast.makeText(getApplicationContext(), "Check E-mail post", Toast.LENGTH_LONG).show();
-                                this.finalize();
+                                Toast.makeText(getApplicationContext(), "Go back and check your e-mail post", Toast.LENGTH_LONG).show();
                             } else
                                 Toast.makeText(getApplicationContext(), "Unknown E-mail", Toast.LENGTH_LONG).show();
 

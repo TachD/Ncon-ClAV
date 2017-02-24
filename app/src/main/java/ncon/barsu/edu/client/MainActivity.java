@@ -1,10 +1,12 @@
 package ncon.barsu.edu.client;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -53,6 +55,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         btnRecovery.setOnClickListener(this);
     }
 
+    public void onStart() {
+        super.onStart();
+
+        String[] AccData = LoadAccountData();
+
+        if (!"".equals(AccData[0]))
+            btnAuth.callOnClick();
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -62,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     @Override
                     public void run() {
                         try {
-                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.43.47"), 10001);
+                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
 
                             Socket CSock = new Socket();
 
@@ -119,23 +130,47 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private Bundle Auth(ObjectOutputStream OS, ObjectInputStream IS) {
         String LoginData;
+        String PassData;
+
+        String[] AccData = LoadAccountData();
 
         try {
-            OS.writeObject(editNick.getText().toString());
+            OS.writeObject(("".equals(AccData[0]))
+                    ?editNick.getText().toString():
+                    AccData[0]);
 
-            OS.writeObject(getEncryptedString(editPass.getText().toString()));
+            PassData = ("".equals(AccData[1]))?
+                    getEncryptedString(editPass.getText().toString()):
+                    AccData[1];
+
+            OS.writeObject(PassData);
 
             LoginData = IS.readObject().toString();
         } catch (Exception Ex) {
-            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
             return null;
         }
 
         Bundle AuthBundle = null;
 
-            if ("0".equals(LoginData))
-                Toast.makeText(getApplicationContext(), "Uncorrected Password and/or Login!", Toast.LENGTH_SHORT);
+            if ("0".equals(LoginData)) {
+                Looper.prepare();
+
+                Toast.makeText(getApplicationContext(), "Uncorrected Password and/or Login!", Toast.LENGTH_SHORT).show();
+
+                if (!"".equals(AccData[0])) {
+                    SharedPreferences AccountDataPref = getSharedPreferences("AccData", MODE_PRIVATE);
+
+                    AccountDataPref.edit().clear();
+                }
+
+                Looper.loop();
+            }
             else {
+
+                if ("".equals(AccData[0]))
+                    SaveAccountData(LoginData, PassData);
+
                 AuthBundle = new Bundle();
 
                 AuthBundle.putString("Nickname", LoginData);
@@ -145,11 +180,30 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     AuthBundle.putString("DayOfBirthday", IS.readObject().toString());
                     AuthBundle.putString("LName", IS.readObject().toString());
                 } catch (Exception Ex) {
-                    Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
                     return  null;
                 }
             }
 
             return AuthBundle;
+    }
+
+    private void SaveAccountData(String Login, String Password) {
+        SharedPreferences AccountDataPref = getSharedPreferences("AccData", MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = AccountDataPref.edit();
+
+        editor.putString("Login", Login);
+        editor.putString("Password", Password);
+        editor.commit();
+    }
+
+    private String[] LoadAccountData() {
+        SharedPreferences AccountDataPref = getSharedPreferences("AccData", MODE_PRIVATE);
+
+        String[] AccData = {AccountDataPref.getString("Login", ""),
+                            AccountDataPref.getString("Password", "")};
+
+        return AccData;
     }
 }
