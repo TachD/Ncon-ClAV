@@ -45,7 +45,7 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                         int Code;
 
                         try {
-                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
+                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName(MainActivity.Host), 10001);
 
                             Socket CSock = new Socket();
 
@@ -70,7 +70,7 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                                 CSock.close();
 
                         } catch (Exception Ex) {
-                            Toast.makeText(RecoveryActivity.this, Ex.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
                             return;
                         }
 

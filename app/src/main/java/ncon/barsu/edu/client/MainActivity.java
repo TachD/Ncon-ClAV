@@ -30,6 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
+    public static String Host = "192.168.15.5";
     private EditText editPass;
     private EditText editNick;
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     @Override
                     public void run() {
                         try {
-                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
+                            SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName(Host), 10001);
 
                             Socket CSock = new Socket();
 
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
-    private String getEncryptedString(String SourceString) throws NoSuchAlgorithmException {
+    public static String getEncryptedString(String SourceString) throws NoSuchAlgorithmException {
         final MessageDigest MD = MessageDigest.getInstance("SHA-256");
 
         MD.reset();

@@ -90,7 +90,7 @@ public class AccountActivity extends AppCompatActivity
             @Override
             public void run() {
                 try {
-                    SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName("192.168.1.4"), 10001);
+                    SocketAddress SockAddr = new InetSocketAddress(InetAddress.getByName(MainActivity.Host), 10001);
 
                     Socket CSock = new Socket();
 
