@@ -30,7 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
-    public static String Host = "192.168.15.5";
+    public static String Host = "192.168.1.3";
     private EditText editPass;
     private EditText editNick;
 
@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                             startActivity(AuthIntent);
 
                         } catch (Exception Ex) {
+                            Looper.prepare();
                             Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
                         }
                     }
                 }).start();

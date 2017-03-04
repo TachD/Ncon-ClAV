@@ -14,13 +14,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <android.support.design.widget.NavigationView
+    <ncon.barsu.edu.client.ArcNavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
+            android:background="@android:color/white"
             app:headerLayout="@layout/nav_header_account"
-            app:menu="@menu/activity_account_drawer"/>
+            app:menu="@menu/activity_account_drawer"
+            app:arc_cropDirection="cropInside"
+            app:arc_width="100dp"/>
 
 </android.support.v4.widget.DrawerLayout>
