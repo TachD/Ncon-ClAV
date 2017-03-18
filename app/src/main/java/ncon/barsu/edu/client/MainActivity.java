@@ -30,7 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
-    public static String Host = "192.168.1.3";
+    public static String Host = "192.168.1.5";
     private EditText editPass;
     private EditText editNick;
 

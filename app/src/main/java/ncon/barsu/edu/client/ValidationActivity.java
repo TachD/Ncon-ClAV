@@ -1,6 +1,6 @@
 package ncon.barsu.edu.client;
 
-import android.content.Intent;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,9 +28,27 @@ public class ValidationActivity extends AppCompatActivity {
 
         editValidCode = (EditText) findViewById(R.id.editValidCode);
         btnConfirm = (Button) findViewById(R.id.btnConfirm);
+
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if ("".equals(editValidCode.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), "Enter Valid-code", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                String validString = getIntent().getExtras().getString("ValidCode");
+                try {
+                    if (!validString.equals(MainActivity.getEncryptedString(editValidCode.getText().toString()))) {
+                        Toast.makeText(getApplicationContext(), "Incorrect Valid-code!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (NoSuchAlgorithmException NSAEx) {
+                    System.out.println("Validation error!");
+                    return;
+                }
+
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -69,17 +87,6 @@ public class ValidationActivity extends AppCompatActivity {
 
     private void Registration(ObjectOutputStream OS, ObjectInputStream IS) {
         Bundle RegBundle = getIntent().getExtras();
-        String validString = RegBundle.getString("ValidCode");
-
-        try {
-            if (!validString.equals(MainActivity.getEncryptedString(editValidCode.getText().toString()))) {
-                Toast.makeText(getApplicationContext(), "Incorrect code!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        } catch (NoSuchAlgorithmException NSAEx) {
-            System.out.println("Validation error!");
-            return;
-        }
 
         try {
             String CryptPass;
@@ -101,6 +108,7 @@ public class ValidationActivity extends AppCompatActivity {
                 return;
             }
 
+            Looper.prepare();
             if (Integer.valueOf(LoginData) == 0)
                 Toast.makeText(getApplicationContext(), "Account not created!", Toast.LENGTH_SHORT).show();
             else

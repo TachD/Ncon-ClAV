@@ -16,6 +16,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.view.View.*;
 
@@ -38,6 +40,17 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
     public void onClick(View V) {
         switch (V.getId()) {
             case R.id.btnRecContinue:
+
+                Pattern EmailValidation =
+                        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+                Matcher EmailMatcher = EmailValidation.matcher(editRecEmail.getText().toString());
+
+                if (!EmailMatcher.find()) {
+                    Toast.makeText(getApplicationContext(), "Enter the E-mail correctly", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 new Thread(new Runnable() {
 
                     @Override
@@ -70,20 +83,26 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                                 CSock.close();
 
                         } catch (Exception Ex) {
+                            Looper.prepare();
                             Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
                             return;
                         }
 
                         try {
                             Looper.prepare();
-                            if (Code == 0) {
-                                Toast.makeText(getApplicationContext(), "Go back and check your e-mail post", Toast.LENGTH_LONG).show();
-                            } else
-                                Toast.makeText(getApplicationContext(), "Unknown E-mail", Toast.LENGTH_LONG).show();
+                            if (Code == 0)
+                                Toast.makeText(getApplicationContext(), "Go check your e-mail post",
+                                        Toast.LENGTH_LONG).show();
+                            else
+                                Toast.makeText(getApplicationContext(), "Unknown E-mail",
+                                        Toast.LENGTH_LONG).show();
 
                             Looper.loop();
+
                         } catch (Throwable ThEx) {
-                            Toast.makeText(getApplicationContext(), ThEx.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "No internet connection or server unavailable",
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 }).start();

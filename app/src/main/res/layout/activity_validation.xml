@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/editValidCode" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" android:layout_marginTop="30dp" android:textColor="#ffffff"
-            android:textColorHint="#64ffffff" android:hint="Enter validation code"/>
+            android:textColorHint="#64ffffff" android:hint="Enter validation code" android:inputType="number"/>
     <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

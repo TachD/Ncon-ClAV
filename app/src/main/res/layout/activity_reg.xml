@@ -59,20 +59,19 @@
             android:id="@+id/editEmail" android:layout_below="@+id/editPass2" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" android:layout_marginTop="20dp" android:hint="Enter E-mail"
             android:textColor="#ffffff" android:textColorHint="#64ffffff" android:layout_alignRight="@+id/editPass2"/>
-    <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="date"
-            android:ems="10"
-            android:id="@+id/editDateofBirth" android:layout_below="@+id/editEmail" android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" android:layout_marginTop="20dp" android:textColor="#ffffff"
-            android:hint="DD.MM.YYYY Data of Birth format" android:textColorHint="#64ffffff"
-            android:layout_alignRight="@+id/editEmail"/>
     <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Registration"
-            android:id="@+id/btnReg" android:layout_alignParentBottom="false"
-            android:textColor="#ffffff" android:layout_below="@+id/editDateofBirth"
-            android:layout_alignParentLeft="true" android:layout_marginTop="20dp"/>
+            android:id="@+id/btnReg"
+            android:textColor="@color/abc_input_method_navigation_guard"
+            android:layout_alignParentBottom="true" android:layout_alignParentEnd="true"
+            android:background="@color/material_blue_grey_800"/>
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Set Date of Birthday"
+            android:id="@+id/btnDate" android:layout_below="@+id/editEmail" android:layout_alignParentStart="false"
+            android:layout_marginTop="20dp" android:background="@color/material_blue_grey_800"
+    />
 </RelativeLayout>

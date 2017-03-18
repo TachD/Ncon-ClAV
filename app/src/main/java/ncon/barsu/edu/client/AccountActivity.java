@@ -1,10 +1,8 @@
 package ncon.barsu.edu.client;
 
+import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Layout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,16 +19,15 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.MessageDigest;
 
 public class AccountActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private Fragment Acc_Data;
+    private Fragment Messenger;
+    //
     private TextView tvNick;
     private TextView tvLFName;
-    //
-    private TextView tvAccFName;
-    private TextView tvAccLName;
-    private TextView tvAccEmail;
-    private TextView tvAccBirthday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +35,6 @@ public class AccountActivity extends AppCompatActivity
         setContentView(R.layout.activity_account);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fbSend);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,30 +44,21 @@ public class AccountActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // Bundle getting...
+        Bundle AuthBundle = getIntent().getExtras();
+
+        Messenger = new messenger();
+        Acc_Data = new acc_data();
+            android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.add(R.id.content_frame, Acc_Data).commit();
 
         tvNick = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNick);
         tvLFName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvLFName);
-        // Account view data
-        View AccLayoutTest = findViewById(R.id.AccLayout);
-
-        tvAccEmail = (TextView) AccLayoutTest.findViewById(R.id.tvAccEmail);
-        TextView tvAccLName = (TextView) AccLayoutTest.findViewById(R.id.tvAccLName);
-        TextView tvAccFName = (TextView) AccLayoutTest.findViewById(R.id.tvAccFName);
-        TextView tvAccEmail = (TextView) AccLayoutTest.findViewById(R.id.tvAccEmail);
-        TextView tvAccBirth = (TextView) AccLayoutTest.findViewById(R.id.tvAccBirthday);
-
-        Bundle AuthBundle = getIntent().getExtras();
-
-        // getting bundle data... / auth data object
         tvNick.setText(AuthBundle.getString("Nickname"));
-        tvLFName.setText(AuthBundle.getString("FName") + " " +AuthBundle.getString("LName"));
+        tvLFName.setText(AuthBundle.getString("FName") + " " + AuthBundle.getString("LName"));
 
-        tvAccFName.setText(AuthBundle.getString("FName"));
-        tvAccLName.setText(AuthBundle.getString("LName"));
-        tvAccEmail.setText(AuthBundle.getString("Email"));
-        tvAccBirth.setText(AuthBundle.getString("DayOfBirthday"));
 
-        //
     }
 
 
@@ -160,23 +138,28 @@ public class AccountActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_messenger:
-                System.out.println("Messenger");
+                fragment = Messenger;
                 break;
             case R.id.nav_friendlist:
-                System.out.println("Friend list");
                 break;
             case R.id.nav_cloud:
-                System.out.println("Cloud");
                 break;
             case R.id.nav_settings:
-                System.out.println("Settings");
                 break;
             case R.id.nav_view:
-                System.out.println("View");
                 break;
+            case R.id.nav_profile:
+                fragment = Acc_Data;
+                break;
+        }
+
+        if (fragment != null) {
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
