@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class    acc_data extends Fragment {
+public class acc_data extends Fragment {
     private TextView tvAccFName;
     private TextView tvAccLName;
     private TextView tvAccEmail;

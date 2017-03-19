@@ -180,9 +180,6 @@ public class ArcNavigationView extends NavigationView {
                         v.setBackgroundDrawable(settings.getBackgroundDrawable());
                     }
                     ViewCompat.setElevation(v, settings.getElevation());
-
-                    //TODO: adjusting child views to new width in their rightmost/leftmost points related to path
-//                    adjustChildViews((ViewGroup) v);
                 }
             }
         }
