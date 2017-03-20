@@ -12,6 +12,7 @@
                         android:id="@+id/nav_messenger"
                         android:icon="@drawable/ic_menu_messenger"
                         android:title="Messenger"/>
+                <!--
                 <item
                         android:id="@+id/nav_friendlist"
                         android:icon="@drawable/ic_menu_friendlist"
@@ -34,7 +35,9 @@
                         android:id="@+id/nav_settings"
                         android:icon="@drawable/ic_menu_manage"
                         android:title="Settings"/>
+                        -->
             </menu>
+
         </item>
     </group>
 </menu>

@@ -1,6 +1,5 @@
 package ncon.barsu.edu.client;
 
-import android.content.Intent;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,10 +68,12 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
 
                             OS.writeObject(-4);
 
+                            Crypto CryptoObj = new Crypto();
+                            OS.writeObject(CryptoObj.genKey());
 
                             ObjectInputStream IS = new ObjectInputStream(CSock.getInputStream());
 
-                            Code = Recovery(OS, IS);
+                            Code = Recovery(OS, IS, CryptoObj);
 
                             if (OS != null)
                                 OS.close();
@@ -92,7 +94,7 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
                         try {
                             Looper.prepare();
                             if (Code == 0)
-                                Toast.makeText(getApplicationContext(), "Go check your e-mail post",
+                                Toast.makeText(getApplicationContext(), "Check your e-mail post",
                                         Toast.LENGTH_LONG).show();
                             else
                                 Toast.makeText(getApplicationContext(), "Unknown E-mail",
@@ -109,14 +111,16 @@ public class RecoveryActivity extends AppCompatActivity implements OnClickListen
         }
     }
 
-    private int Recovery(ObjectOutputStream OS, ObjectInputStream IS) {
+    private int Recovery(ObjectOutputStream OS, ObjectInputStream IS, Crypto CryptoObj)
+            throws Exception {
         String RecoveryData;
 
         try {
-            OS.writeObject(editRecEmail.getText().toString());
+            CryptoObj.sendEncryptString(OS, editRecEmail.getText().toString());
 
             try {
-                RecoveryData = IS.readObject().toString();
+                CryptoObj.setKey((Key) IS.readObject());
+                RecoveryData = CryptoObj.readDecryptString(IS);
             } catch (Exception Ex) {
                 return -1;
             }

@@ -22,6 +22,8 @@ public class messenger extends Fragment {
     private ListView lvMsgList;
     private ImageView ivSend;
     private EditText etMsg;
+    private EditText etPort;
+    private Button btnPort;
     //
     private NcoNClient Client;
     private Handler MsgHandler;
@@ -43,6 +45,7 @@ public class messenger extends Fragment {
         lvMsgList = (ListView) view.findViewById(R.id.lvMesg);
         lvMsgList.setAdapter(MsgAdapter);
 
+        etPort = (EditText) view.findViewById(R.id.etPort);
         etMsg = (EditText) view.findViewById(R.id.etMsg);
 
         ivSend = (ImageView) view.findViewById(R.id.ivSend);
@@ -75,6 +78,24 @@ public class messenger extends Fragment {
             }
         });
 
+        btnPort = (Button) view.findViewById(R.id.btnPort);
+        btnPort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int Port = Integer.valueOf(etPort.getText().toString());
+
+                CreateSession(Port);
+
+                btnPort.setVisibility(View.INVISIBLE);
+                etPort.setVisibility(View.INVISIBLE);
+                etPort.setText("");
+                //
+                ivSend.setVisibility(View.VISIBLE);
+                lvMsgList.setVisibility(View.VISIBLE);
+                etMsg.setVisibility(View.VISIBLE);
+            }
+        });
+
         MsgHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -85,7 +106,7 @@ public class messenger extends Fragment {
 
         return view;
     }
-    // // TODO: 19.03.2017 use this method
+
     private void CreateSession(final int PORT) {
         new Thread(new Runnable() {
             @Override
@@ -134,6 +155,9 @@ public class messenger extends Fragment {
             Toast.makeText(getActivity(), "Connection completed",
                     Toast.LENGTH_SHORT).show();
             Looper.loop();
+
+            MsgList.clear();
+            MsgAdapter.notifyDataSetChanged();
         }
     }
 

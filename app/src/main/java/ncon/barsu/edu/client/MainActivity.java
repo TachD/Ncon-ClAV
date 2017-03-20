@@ -26,6 +26,7 @@ import java.net.SocketAddress;
 
 import java.nio.charset.Charset;
 
+import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -84,10 +85,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                             OS.writeObject(-1);
 
+                            Crypto CryptoObj = new Crypto();
+                            OS.writeObject(CryptoObj.genKey());
+
 
                             ObjectInputStream IS = new ObjectInputStream(CSock.getInputStream());
 
-                            Bundle AuthBundle = Auth(OS, IS);
+                            Bundle AuthBundle = Auth(OS, IS, CryptoObj);
 
                             if (OS != null)
                                 OS.close();
@@ -131,14 +135,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         return String.format("%064x", new BigInteger(1, MD.digest()));
     }
 
-    private Bundle Auth(ObjectOutputStream OS, ObjectInputStream IS) {
+    private Bundle Auth(ObjectOutputStream OS, ObjectInputStream IS, Crypto CryptoObj) {
         String LoginData;
         String PassData;
 
         String[] AccData = LoadAccountData();
 
         try {
-            OS.writeObject(("".equals(AccData[0]))
+
+            CryptoObj.sendEncryptString(OS, ("".equals(AccData[0]))
                     ?editNick.getText().toString():
                     AccData[0]);
 
@@ -146,9 +151,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     getEncryptedString(editPass.getText().toString()):
                     AccData[1];
 
-            OS.writeObject(PassData);
+            CryptoObj.sendEncryptString(OS, PassData);
 
-            LoginData = IS.readObject().toString();
+            CryptoObj.setKey((Key) IS.readObject());
+
+            LoginData = CryptoObj.readDecryptString(IS);
         } catch (Exception Ex) {
             Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
             return null;
@@ -178,10 +185,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                 AuthBundle.putString("Nickname", LoginData);
                 try {
-                    AuthBundle.putString("Email", IS.readObject().toString());
-                    AuthBundle.putString("FName", IS.readObject().toString());
-                    AuthBundle.putString("DayOfBirthday", IS.readObject().toString());
-                    AuthBundle.putString("LName", IS.readObject().toString());
+                    AuthBundle.putString("Email", CryptoObj.readDecryptString(IS));
+                    AuthBundle.putString("FName", CryptoObj.readDecryptString(IS));
+                    AuthBundle.putString("DayOfBirthday", CryptoObj.readDecryptString(IS));
+                    AuthBundle.putString("LName", CryptoObj.readDecryptString(IS));
                 } catch (Exception Ex) {
                     Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
                     return  null;

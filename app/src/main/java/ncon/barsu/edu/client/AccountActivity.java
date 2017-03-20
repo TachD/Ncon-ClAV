@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
 import java.security.MessageDigest;
 
 public class AccountActivity extends AppCompatActivity
@@ -50,7 +51,6 @@ public class AccountActivity extends AppCompatActivity
         Messenger = new messenger();
         Acc_Data = new acc_data();
             android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.add(R.id.content_frame, Acc_Data).commit();
 
         tvNick = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNick);
@@ -78,7 +78,10 @@ public class AccountActivity extends AppCompatActivity
 
                     OS.writeObject(-5);
 
-                    OS.writeObject(tvNick.getText().toString());
+                    Crypto CryptoObj = new Crypto();
+                    OS.writeObject(CryptoObj.genKey());
+
+                    CryptoObj.sendEncryptString(OS, tvNick.getText().toString());
 
                     OS.close();
                     CSock.close();
@@ -142,14 +145,6 @@ public class AccountActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.nav_messenger:
                 fragment = Messenger;
-                break;
-            case R.id.nav_friendlist:
-                break;
-            case R.id.nav_cloud:
-                break;
-            case R.id.nav_settings:
-                break;
-            case R.id.nav_view:
                 break;
             case R.id.nav_profile:
                 fragment = Acc_Data;

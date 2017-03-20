@@ -15,7 +15,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@+id/ivSend"
                 android:hint="Your message"
-                android:textColor="@color/material_grey_600"/>
+                android:textColor="@color/material_grey_600" android:visibility="invisible"/>
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -24,11 +24,25 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/etMsg"
-                android:baselineAlignBottom="false"/>
+                android:baselineAlignBottom="false" android:visibility="invisible"/>
         <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/lvMesg" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
-                android:layout_above="@+id/etMsg"/>
+                android:layout_above="@+id/etMsg" android:visibility="invisible"/>
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/etPort" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
+                android:layout_marginTop="172dp" android:textColor="#ffffff" android:hint="Enter port to connection"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Port"
+                android:id="@+id/btnPort"
+                android:layout_alignEnd="@+id/ivSend" android:layout_toEndOf="@+id/etPort"
+                android:layout_alignTop="@+id/etPort"/>
     </RelativeLayout>
 </LinearLayout>

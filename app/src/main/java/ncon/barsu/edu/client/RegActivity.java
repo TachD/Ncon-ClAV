@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -83,9 +84,12 @@ public class RegActivity extends AppCompatActivity implements DatePickerDialog.O
 
                             OS.writeObject(-2);
 
+                            Crypto CryptoObj = new Crypto();
+                            OS.writeObject(CryptoObj.genKey());
+
                             ObjectInputStream IS = new ObjectInputStream(CSock.getInputStream());
 
-                            Bundle RegBundle = Validation(OS, IS);
+                            Bundle RegBundle = Validation(OS, IS, CryptoObj);
 
                             if (OS != null)
                                 OS.close();
@@ -149,19 +153,19 @@ public class RegActivity extends AppCompatActivity implements DatePickerDialog.O
         return "Registration request...";
     }
 
-    private Bundle Validation(ObjectOutputStream OS, ObjectInputStream IS) {
+    private Bundle Validation(ObjectOutputStream OS, ObjectInputStream IS, Crypto CryptoObj) {
         Bundle RegBundle = new Bundle();
         try {
-            OS.writeObject(editNick.getText().toString());
+            CryptoObj.sendEncryptString(OS, editNick.getText().toString());
             RegBundle.putString("Nickname", editNick.getText().toString());
 
-            OS.writeObject(editFName.getText().toString());
+            CryptoObj.sendEncryptString(OS, editFName.getText().toString());
             RegBundle.putString("FName", editFName.getText().toString());
 
-            OS.writeObject(editLName.getText().toString());
+            CryptoObj.sendEncryptString(OS,editLName.getText().toString());
             RegBundle.putString("LName", editLName.getText().toString());
 
-            OS.writeObject(editEmail.getText().toString());
+            CryptoObj.sendEncryptString(OS,editEmail.getText().toString());
             RegBundle.putString("Email", editEmail.getText().toString());
 
             RegBundle.putString("DayOfBirth",Data);
@@ -173,9 +177,11 @@ public class RegActivity extends AppCompatActivity implements DatePickerDialog.O
                 return Bundle.EMPTY;
             }
 
+
             String RegData;
             try {
-                RegData = IS.readObject().toString();
+                CryptoObj.setKey((Key) IS.readObject());
+                RegData = CryptoObj.readDecryptString(IS);
             } catch (Exception Ex) {
                 return Bundle.EMPTY;
             }
@@ -204,8 +210,8 @@ public class RegActivity extends AppCompatActivity implements DatePickerDialog.O
 
             return Bundle.EMPTY;
 
-        } catch (IOException IOEx) {
-            System.out.println("Server not found! " + IOEx.getMessage());
+        } catch (Exception Ex) {
+            System.out.println("Server not found! " + Ex.getMessage());
             return Bundle.EMPTY;
         }
     }

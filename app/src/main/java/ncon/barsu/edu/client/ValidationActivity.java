@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
 public class ValidationActivity extends AppCompatActivity {
@@ -63,9 +64,12 @@ public class ValidationActivity extends AppCompatActivity {
 
                             OS.writeObject(-3);
 
+                            Crypto CryptoObj = new Crypto();
+                            OS.writeObject(CryptoObj.genKey());
+
                             ObjectInputStream IS = new ObjectInputStream(CSock.getInputStream());
 
-                            Registration(OS, IS);
+                            Registration(OS, IS, CryptoObj);
 
                             if (OS != null)
                                 OS.close();
@@ -85,7 +89,7 @@ public class ValidationActivity extends AppCompatActivity {
         });
     }
 
-    private void Registration(ObjectOutputStream OS, ObjectInputStream IS) {
+    private void Registration(ObjectOutputStream OS, ObjectInputStream IS, Crypto CryptoObj) {
         Bundle RegBundle = getIntent().getExtras();
 
         try {
@@ -93,29 +97,30 @@ public class ValidationActivity extends AppCompatActivity {
 
             CryptPass = RegBundle.getString("Password");
 
-            OS.writeObject(RegBundle.getString("Nickname"));
-            OS.writeObject(CryptPass);
-            OS.writeObject(RegBundle.getString("FName"));
-            OS.writeObject(RegBundle.getString("LName"));
-            OS.writeObject(RegBundle.getString("Email"));
-            OS.writeObject(RegBundle.getString("DayOfBirth"));
+            CryptoObj.sendEncryptString(OS, RegBundle.getString("Nickname"));
+            CryptoObj.sendEncryptString(OS,CryptPass);
+            CryptoObj.sendEncryptString(OS,RegBundle.getString("FName"));
+            CryptoObj.sendEncryptString(OS,RegBundle.getString("LName"));
+            CryptoObj.sendEncryptString(OS,RegBundle.getString("Email"));
+            CryptoObj.sendEncryptString(OS,RegBundle.getString("DayOfBirth"));
 
             String LoginData;
 
+            CryptoObj.setKey((Key) IS.readObject());
+
             try {
-                LoginData = IS.readObject().toString();
+                LoginData = CryptoObj.readDecryptString(IS);
             } catch (Exception Ex) {
                 return;
             }
 
             Looper.prepare();
-            if (Integer.valueOf(LoginData) == 0)
-                Toast.makeText(getApplicationContext(), "Account not created!", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(getApplicationContext(), "Account created!", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException IOEx) {
-            Toast.makeText(getApplicationContext(), IOEx.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), (Integer.valueOf(LoginData) == 0)?
+                        "Account not created!":"Account created!",
+                        Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        } catch (Exception Ex) {
+            Toast.makeText(getApplicationContext(), Ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }
